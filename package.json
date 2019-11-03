@@ -18,7 +18,10 @@
   "homepage": "",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.4",
-    "mongoose": "^5.3.4"
+    "express": "^4.17.1",
+    "mongoose": "^5.7.7"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
   }
 }

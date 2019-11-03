@@ -42,6 +42,7 @@ app.get('/api', (req, res) => {
       {method: 'GET', path: '/api', description: 'Describes all available endpoints'},
       {method: 'GET', path: '/api/profile', description: 'Data about me'},
       {method: 'GET', path: '/api/books/', description: 'Get All books information'},
+      {method: 'GET', path: '/api/books/:id', description: 'Get book with id'}
       // TODO: Write other API end-points description here like above
     ]
   })
@@ -49,14 +50,14 @@ app.get('/api', (req, res) => {
 // TODO:  Fill the values
 app.get('/api/profile', (req, res) => {
   res.json({
-    'name': '',
-    'homeCountry': '',
-    'degreeProgram': '',//informatics or CSE.. etc
-    'email': '',
+    'name': 'Michał Mazurkiewicz',
+    'homeCountry': 'Poland',
+    'degreeProgram': 'Erasmus Master Electrical Engineering',//informatics or CSE.. etc
+    'email': 'mazurkiewiczpw@gmail.com',
     'deployedURLLink': '',//leave this blank for the first exercise
     'apiDocumentationURL': '', //leave this also blank for the first exercise
-    'currentCity': '',
-    'hobbies': []
+    'currentCity': 'Muenchen',
+    'hobbies': ["Football", "Video Editing", "Languages"]
 
   })
 });
@@ -88,10 +89,16 @@ app.post('/api/books/', (req, res) => {
    * TODO: use the books model and create a new object
    * with the information in req.body
    */
+
   /*
    * return the new book information object as json
    */
-  var newBook = {};
+  
+  var newBook = new db.books(req.body);
+  
+  newBook.save(function(err){
+    if(err) { console.log(err)};
+  });
   res.json(newBook);
 });
 
@@ -112,8 +119,18 @@ app.put('/api/books/:id', (req, res) => {
   /*
    * Send the updated book information as a JSON object
    */
-  var updatedBookInfo = {};
-  res.json(updatedBookInfo);
+  
+
+  db.books.findByIdAndUpdate(bookId, bookNewData, function (err, updatedBookInfo) {
+    if (err) throw err;
+    /*
+     * return the object as array of json values
+     */
+      var updatedBookInfo = bookNewData;
+      res.json(updatedBookInfo);
+  });
+
+  
 });
 /*
  * Delete a book based upon the specified ID
@@ -123,14 +140,19 @@ app.delete('/api/books/:id', (req, res) => {
    * Get the book ID of book from the request parameters
    */
   const bookId = req.params.id;
+  console.log(bookId);
   /*
    * TODO: use the books model and find using
    * the bookId and delete the book
+   * db.books.deleteOne(deletedBook, function (err) {if(err) { console.log(err)}});
+   * var deletedBook = new db.books.findOne({_id : bookId}, function (err) {if(err) { console.log(err)}});
    */
   /*
    * Send the deleted book information as a JSON object
    */
-  var deletedBook = {};
+  var deletedBook = new db.books(req.body);
+  db.books.findByIdAndDelete(bookId).exec();
+
   res.json(deletedBook);
 });
 
